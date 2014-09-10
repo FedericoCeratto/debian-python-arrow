@@ -1,0 +1,11 @@
+*.pyc
+*.egg-info
+
+.coverage
+nosetests.xml
+
+local/
+dist/
+docs/_build/
+.idea
+.DS_Store
