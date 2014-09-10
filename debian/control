@@ -1,0 +1,61 @@
+Source: python-arrow
+Section: python
+Priority: optional
+Maintainer: Federico Ceratto <federico.ceratto@gmail.com>
+Build-Depends: debhelper (>= 9~)
+Build-Depends-Indep:
+ dh-python,
+ python-all,
+ python-dateutil,
+ python-doc,
+ python-setuptools,
+ python-sphinx,
+ python3-all,
+ python3-setuptools
+Standards-Version: 3.9.5
+Homepage: http://crsmithdev.com/arrow/
+X-Python-Version: >= 2.7
+X-Python3-Version: >= 3.3
+Vcs-Git: git://anonscm.debian.org/collab-maint/python-arrow.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/python-arrow.git;a=summary
+
+Package: python-arrow
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Provides: ${python:Provides}
+Suggests: python-arrow-doc
+Description: Python library to manipulate dates, times, and timestamps
+ A Python library that offers a sensible, human-friendly approach to creating,
+ manipulating, formatting and converting dates, times, and timestamps.
+ It implements and updates the datetime type, plugging gaps in functionality,
+ and provides a module API that supports many common creation scenarios.
+ Arrow replaces a number of modules: datetime, time, calendar, dateutil, pytz.
+
+Package: python3-arrow
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Provides: ${python3:Provides}
+Suggests: python-arrow-doc
+Description: Python3 library to manipulate dates, times, and timestamps
+ A Python3 library that offers a sensible, human-friendly approach to creating,
+ manipulating, formatting and converting dates, times, and timestamps.
+ It implements and updates the datetime type, plugging gaps in functionality,
+ and provides a module API that supports many common creation scenarios.
+ Arrow replaces a number of modules: datetime, time, calendar, dateutil, pytz.
+
+Package: python-arrow-doc
+Architecture: all
+Section: doc
+Depends: 
+ ${misc:Depends},
+ ${sphinxdoc:Depends},
+ libjs-jquery,
+ libjs-underscore
+Provides: ${python:Provides}
+Description: Python library to manipulate dates, times, timestamps: documentation
+ A Python library that offers a sensible, human-friendly approach to creating,
+ manipulating, formatting and converting dates, times, and timestamps.
+ It implements and updates the datetime type, plugging gaps in functionality,
+ and provides a module API that supports many common creation scenarios.
+ Arrow replaces a number of modules: datetime, time, calendar, dateutil, pytz.
+ This is a documentation package.

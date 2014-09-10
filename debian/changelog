@@ -1,0 +1,5 @@
+python-arrow (0.4.4-1) unstable; urgency=low
+
+  * Initial release (Closes: #757376)
+
+ -- Federico Ceratto <federico.ceratto@gmail.com>  Thu, 07 Aug 2014 23:42:03 +0100

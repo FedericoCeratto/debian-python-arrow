@@ -1,0 +1,49 @@
+From: Federico Ceratto <federico.ceratto@gmail.com>
+Date: Sat, 13 Sep 2014 11:05:25 +0100
+Subject: Remove privacy-breaching URLs
+
+---
+ docs/_themes/README.rst     | 9 ---------
+ docs/_themes/f6/layout.html | 5 -----
+ 2 files changed, 14 deletions(-)
+
+diff --git a/docs/_themes/README.rst b/docs/_themes/README.rst
+index a112101..01fb7f6 100644
+--- a/docs/_themes/README.rst
++++ b/docs/_themes/README.rst
+@@ -21,12 +21,3 @@ https://github.com/vkvn/sphinx-themes/issues
+ 
+ Themes are licensed under the
+ `GNU General Public License <http://www.gnu.org/licenses/gpl.html>`_.
+-
+-
+-.. raw:: html
+-
+-   <iframe style="border: 0; margin: 0; padding: 0;"
+-           src="https://www.gittip.com/vkvn/widget.html"
+-           width="48pt" height="22pt"></iframe>
+-
+-   <a href="http://coderwall.com/vkvn"><img alt="Endorse vkvn on Coderwall" src="http://api.coderwall.com/vkvn/endorsecount.png" /></a>
+diff --git a/docs/_themes/f6/layout.html b/docs/_themes/f6/layout.html
+index 00ee70b..ca75c5c 100644
+--- a/docs/_themes/f6/layout.html
++++ b/docs/_themes/f6/layout.html
+@@ -5,18 +5,13 @@
+ {%- endblock -%}
+ 
+ {%- block extrahead -%}
+-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic|Source+Code+Pro' rel='stylesheet' type='text/css'></link>
+ <meta name="description" content="Arrow:  better dates and times for Python.  Arrow is a Python library that provides a sensible, intelligent way of creating, manipulating, formatting and converting dates and times."></meta>
+ {%- endblock -%}
+ 
+ {# put the sidebar before the body #}
+ {% block sidebarlogo %}
+-<a href="https://github.com/crsmithdev/arrow"><img style="position: absolute; top: 0; right: 0; border: 0;" 
+-    src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+ 
+ <h2><a style="font-size: .8em;"href="https://github.com/crsmithdev/arrow">github.com/crsmithdev/arrow</a></h2>
+-<iframe src="http://ghbtns.com/github-btn.html?user=crsmithdev&repo=arrow&type=watch&count=true&size=large"
+-  allowtransparency="true" frameborder="0" scrolling="0" width="130" height="40"></iframe>
+ 
+ {% endblock%}
+ {% block sidebar1 %}{{ sidebar() }}{% endblock %}
