@@ -79,8 +79,9 @@ class DateTimeParserParseTests(Chai):
 
     def test_parse_timestamp(self):
 
+        tz_utc = tz.tzutc()
         timestamp = int(time.time())
-        expected = datetime.fromtimestamp(timestamp)
+        expected = datetime.fromtimestamp(timestamp, tz=tz_utc)
         assertEqual(self.parser.parse(str(timestamp), 'X'), expected)
 
     def test_parse_names(self):
@@ -94,15 +95,19 @@ class DateTimeParserParseTests(Chai):
 
         expected = datetime(1, 1, 1, 13, 0, 0)
         assertEqual(self.parser.parse('1 pm', 'H a'), expected)
+        assertEqual(self.parser.parse('1 pm', 'h a'), expected)
 
         expected = datetime(1, 1, 1, 1, 0, 0)
         assertEqual(self.parser.parse('1 am', 'H A'), expected)
+        assertEqual(self.parser.parse('1 am', 'h A'), expected)
 
         expected = datetime(1, 1, 1, 0, 0, 0)
         assertEqual(self.parser.parse('12 am', 'H A'), expected)
+        assertEqual(self.parser.parse('12 am', 'h A'), expected)
 
         expected = datetime(1, 1, 1, 12, 0, 0)
         assertEqual(self.parser.parse('12 pm', 'H A'), expected)
+        assertEqual(self.parser.parse('12 pm', 'h A'), expected)
 
     def test_parse_tz(self):
 
@@ -300,54 +305,60 @@ class DateTimeParserISOTests(Chai):
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.7'),
-            datetime(2013, 2, 3, 4, 5, 6, 7)
+            datetime(2013, 2, 3, 4, 5, 6, 700000)
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.78'),
-            datetime(2013, 2, 3, 4, 5, 6, 78)
+            datetime(2013, 2, 3, 4, 5, 6, 780000)
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.789'),
-            datetime(2013, 2, 3, 4, 5, 6, 789)
+            datetime(2013, 2, 3, 4, 5, 6, 789000)
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.7891'),
-            datetime(2013, 2, 3, 4, 5, 6, 7891)
+            datetime(2013, 2, 3, 4, 5, 6, 789100)
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.78912'),
-            datetime(2013, 2, 3, 4, 5, 6, 78912)
+            datetime(2013, 2, 3, 4, 5, 6, 789120)
         )
 
     def test_YYYY_MM_DDTHH_mm_ss_SZ(self):
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.7+01:00'),
-            datetime(2013, 2, 3, 4, 5, 6, 7, tzinfo=tz.tzoffset(None, 3600))
+            datetime(2013, 2, 3, 4, 5, 6, 700000, tzinfo=tz.tzoffset(None, 3600))
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.78+01:00'),
-            datetime(2013, 2, 3, 4, 5, 6, 78, tzinfo=tz.tzoffset(None, 3600))
+            datetime(2013, 2, 3, 4, 5, 6, 780000, tzinfo=tz.tzoffset(None, 3600))
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.789+01:00'),
-            datetime(2013, 2, 3, 4, 5, 6, 789, tzinfo=tz.tzoffset(None, 3600))
+            datetime(2013, 2, 3, 4, 5, 6, 789000, tzinfo=tz.tzoffset(None, 3600))
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.7891+01:00'),
-            datetime(2013, 2, 3, 4, 5, 6, 7891, tzinfo=tz.tzoffset(None, 3600))
+            datetime(2013, 2, 3, 4, 5, 6, 789100, tzinfo=tz.tzoffset(None, 3600))
         )
 
         assertEqual(
             self.parser.parse_iso('2013-02-03T04:05:06.78912+01:00'),
-            datetime(2013, 2, 3, 4, 5, 6, 78912, tzinfo=tz.tzoffset(None, 3600))
+            datetime(2013, 2, 3, 4, 5, 6, 789120, tzinfo=tz.tzoffset(None, 3600))
+        )
+
+        # Properly parse string with Z timezone
+        assertEqual(
+            self.parser.parse_iso('2013-02-03T04:05:06.78912Z'),
+            datetime(2013, 2, 3, 4, 5, 6, 789120)
         )
 
     def test_isoformat(self):
@@ -387,3 +398,53 @@ class TzinfoParserTests(Chai):
 
         with assertRaises(parser.ParserError):
             self.parser.parse('fail')
+
+
+class DateTimeParserMonthNameTests(Chai):
+
+    def setUp(self):
+        super(DateTimeParserMonthNameTests, self).setUp()
+
+        self.parser = parser.DateTimeParser('en_us')
+
+    def test_shortmonth_capitalized(self):
+
+        assertEqual(
+            self.parser.parse('2013-Jan-01', 'YYYY-MMM-DD'),
+            datetime(2013, 1, 1)
+        )
+
+    def test_shortmonth_allupper(self):
+
+        assertEqual(
+            self.parser.parse('2013-JAN-01', 'YYYY-MMM-DD'),
+            datetime(2013, 1, 1)
+        )
+
+    def test_shortmonth_alllower(self):
+
+        assertEqual(
+            self.parser.parse('2013-jan-01', 'YYYY-MMM-DD'),
+            datetime(2013, 1, 1)
+        )
+
+    def test_month_capitalized(self):
+
+        assertEqual(
+            self.parser.parse('2013-January-01', 'YYYY-MMMM-DD'),
+            datetime(2013, 1, 1)
+        )
+
+    def test_month_allupper(self):
+
+        assertEqual(
+            self.parser.parse('2013-JANUARY-01', 'YYYY-MMMM-DD'),
+            datetime(2013, 1, 1)
+        )
+
+    def test_month_alllower(self):
+
+        assertEqual(
+            self.parser.parse('2013-january-01', 'YYYY-MMMM-DD'),
+            datetime(2013, 1, 1)
+        )
