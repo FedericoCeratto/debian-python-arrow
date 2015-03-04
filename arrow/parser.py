@@ -30,8 +30,8 @@ class DateTimeParser(object):
     _INPUT_RE_MAP = {
         'YYYY': _FOUR_DIGIT_RE,
         'YY': _TWO_DIGIT_RE,
-        'MMMM': re.compile('({0})'.format('|'.join(calendar.month_name[1:]))),
-        'MMM': re.compile('({0})'.format('|'.join(calendar.month_abbr[1:]))),
+        'MMMM': re.compile('({0})'.format('|'.join(calendar.month_name[1:])), re.IGNORECASE),
+        'MMM': re.compile('({0})'.format('|'.join(calendar.month_abbr[1:])), re.IGNORECASE),
         'MM': _TWO_DIGIT_RE,
         'M': _ONE_OR_TWO_DIGIT_RE,
         'DD': _TWO_DIGIT_RE,
@@ -76,19 +76,15 @@ class DateTimeParser(object):
             has_seconds = time_parts[0].count(':') > 1
             has_subseconds = '.' in time_parts[0]
 
-        else:
-            has_tz = has_seconds = has_subseconds = False
-
-        if has_time:
-
             if has_subseconds:
-                formats = ['YYYY-MM-DDTHH:mm:ss.SSSSSS']
+                subseconds_token = 'S' * len(re.split('\D+', time_parts[0].split('.')[1], 1)[0])
+                formats = ['YYYY-MM-DDTHH:mm:ss.%s' % subseconds_token]
             elif has_seconds:
                 formats = ['YYYY-MM-DDTHH:mm:ss']
             else:
                 formats = ['YYYY-MM-DDTHH:mm']
-
         else:
+            has_tz = False
             formats = [
                 'YYYY-MM-DD',
                 'YYYY-MM',
@@ -168,14 +164,15 @@ class DateTimeParser(object):
             parts['year'] = 1900 + value if value > 68 else 2000 + value
 
         elif token in ['MMMM', 'MMM']:
-            parts['month'] = self.locale.month_number(value)
+            parts['month'] = self.locale.month_number(value.capitalize())
+
         elif token in ['MM', 'M']:
             parts['month'] = int(value)
 
         elif token in ['DD', 'D']:
             parts['day'] = int(value)
 
-        elif token in ['HH', 'H']:
+        elif token.upper() in ['HH', 'H']:
             parts['hour'] = int(value)
 
         elif token in ['mm', 'm']:
@@ -215,7 +212,8 @@ class DateTimeParser(object):
         timestamp = parts.get('timestamp')
 
         if timestamp:
-            return datetime.fromtimestamp(timestamp)
+            tz_utc = tz.tzutc()
+            return datetime.fromtimestamp(timestamp, tz=tz_utc)
 
         am_pm = parts.get('am_pm')
         hour = parts.get('hour', 0)

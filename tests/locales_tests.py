@@ -171,3 +171,46 @@ class HindiLocaleTests(Chai):
 
         result = self.locale._format_relative('एक घंट', 'hour', -1)
         assertEqual(result, 'एक घंट पहले')
+
+class CzechLocaleTests(Chai):
+
+    def setUp(self):
+        super(CzechLocaleTests, self).setUp()
+
+        self.locale = locales.CzechLocale()
+
+    def test_format_timeframe(self):
+
+        assertEqual(self.locale._format_timeframe('hours', 2), '2 hodiny')
+        assertEqual(self.locale._format_timeframe('hour', 0), '0 hodin')
+
+    def test_format_relative_now(self):
+
+        result = self.locale._format_relative('Teď', 'now', 0)
+
+        assertEqual(result, 'Teď')
+    def test_format_relative_future(self):
+
+        result = self.locale._format_relative('hodinu', 'hour', 1)
+        assertEqual(result, 'Za hodinu')
+
+    def test_format_relative_past(self):
+
+        result = self.locale._format_relative('hodinou', 'hour', -1)
+        assertEqual(result, 'Před hodinou')
+
+
+class HebrewLocaleTests(Chai):
+
+    def test_couple_of_timeframe(self):
+        locale = locales.HebrewLocale()
+
+        assertEqual(locale._format_timeframe('hours', 2), 'שעתיים')
+        assertEqual(locale._format_timeframe('months', 2), 'חודשיים')
+        assertEqual(locale._format_timeframe('days', 2), 'יומיים')
+        assertEqual(locale._format_timeframe('years', 2), 'שנתיים')
+
+        assertEqual(locale._format_timeframe('hours', 3), '3 שעות')
+        assertEqual(locale._format_timeframe('months', 4), '4 חודשים')
+        assertEqual(locale._format_timeframe('days', 3), '3 ימים')
+        assertEqual(locale._format_timeframe('years', 5), '5 שנים')
