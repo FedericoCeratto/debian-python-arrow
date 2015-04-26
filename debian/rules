@@ -21,3 +21,7 @@ endif
 
 override_dh_installchangelogs:
 	dh_installchangelogs HISTORY.md
+
+override_dh_auto_clean:
+	rm __pycache__ -rf
+	rm pybuild -rf
